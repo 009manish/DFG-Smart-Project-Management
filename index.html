@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>DFG - Discuss for Goal</title>
+
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background:
+                radial-gradient(circle at 15% 30%, #102d72 0%, transparent 30%),
+                radial-gradient(circle at 85% 20%, #3b176e 0%, transparent 32%),
+                linear-gradient(135deg, #020817, #080b2b, #10052b);
+
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .background {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .node {
+            position: absolute;
+            width: 13px;
+            height: 13px;
+            border: 2px solid #6c63ff;
+            border-radius: 50%;
+            box-shadow: 0 0 15px #426cff;
+        }
+
+        .line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, #278cff, #8b4dff);
+            opacity: 0.35;
+            transform-origin: left center;
+        }
+
+        .node1 { left: 8%; top: 30%; }
+        .node2 { left: 20%; top: 18%; }
+        .node3 { left: 25%; top: 42%; }
+        .node4 { right: 18%; top: 22%; }
+        .node5 { right: 8%; top: 38%; }
+        .node6 { right: 25%; bottom: 20%; }
+
+        .main {
+            position: relative;
+            z-index: 2;
+            width: min(480px, 92%);
+        }
+
+        .login-card {
+            background: rgba(7, 13, 39, 0.88);
+            border: 1px solid rgba(120, 130, 255, 0.25);
+            border-radius: 24px;
+            padding: 45px 42px;
+            text-align: center;
+
+            box-shadow:
+                0 25px 80px rgba(0, 0, 0, 0.5),
+                0 0 60px rgba(65, 75, 255, 0.08);
+
+            backdrop-filter: blur(18px);
+        }
+
+        .logo {
+            font-size: 58px;
+            font-weight: 800;
+            letter-spacing: -5px;
+            background: linear-gradient(90deg, #168cff, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .welcome {
+            font-size: 31px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .tagline {
+            font-size: 18px;
+            font-weight: 600;
+            background: linear-gradient(90deg, #2294ff, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 18px;
+        }
+
+        .description {
+            color: #aeb7d2;
+            line-height: 1.6;
+            font-size: 15px;
+            margin-bottom: 32px;
+        }
+
+        #googleLogin {
+            width: 100%;
+            height: 56px;
+            border: none;
+            border-radius: 12px;
+
+            background: white;
+            color: #111827;
+
+            font-size: 16px;
+            font-weight: 600;
+
+            cursor: pointer;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 13px;
+
+            transition: 0.2s;
+        }
+
+        #googleLogin:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255,255,255,0.12);
+        }
+
+        .google-icon {
+            width: 21px;
+            height: 21px;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #66708e;
+            font-size: 13px;
+            margin: 27px 0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            height: 1px;
+            flex: 1;
+            background: #26304d;
+        }
+
+        .info {
+            color: #71809f;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .footer {
+            margin-top: 25px;
+            color: #65718f;
+            font-size: 12px;
+        }
+
+        .status {
+            margin-top: 18px;
+            color: #8ca0c7;
+            font-size: 13px;
+            min-height: 18px;
+        }
+
+        @media (max-width: 500px) {
+            .login-card {
+                padding: 35px 25px;
+            }
+
+            .welcome {
+                font-size: 26px;
+            }
+
+            .logo {
+                font-size: 50px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="background">
+        <div class="node node1"></div>
+        <div class="node node2"></div>
+        <div class="node node3"></div>
+        <div class="node node4"></div>
+        <div class="node node5"></div>
+        <div class="node node6"></div>
+
+        <div class="line"
+            style="left:9%; top:30%; width:140px; transform:rotate(-25deg);">
+        </div>
+
+        <div class="line"
+            style="left:20%; top:19%; width:130px; transform:rotate(65deg);">
+        </div>
+
+        <div class="line"
+            style="right:10%; top:38%; width:150px; transform:rotate(-25deg);">
+        </div>
+
+        <div class="line"
+            style="right:18%; top:23%; width:130px; transform:rotate(35deg);">
+        </div>
+    </div>
+
+
+    <main class="main">
+
+        <div class="login-card">
+
+            <div class="logo">DFG</div>
+
+            <h1 class="welcome">
+                Welcome to DFG
+            </h1>
+
+            <div class="tagline">
+                Plan. Prioritize. Achieve.
+            </div>
+
+            <p class="description">
+                Turn team discussions into actionable plans.
+                Collaborate with your team, organize tasks,
+                and achieve your project goals together.
+            </p>
+
+
+            <button id="googleLogin">
+
+                <svg class="google-icon"
+                    viewBox="0 0 24 24">
+
+                    <path fill="#4285F4"
+                        d="M21.35 12.23c0-.79-.07-1.55-.23-2.27H12v4.3h5.23a4.47 4.47 0 0 1-1.94 2.94v2.45h3.14c1.84-1.69 2.92-4.18 2.92-7.42z"/>
+
+                    <path fill="#34A853"
+                        d="M12 21.99c2.63 0 4.84-.87 6.45-2.34l-3.14-2.45c-.87.58-1.98.92-3.31.92-2.54 0-4.69-1.72-5.46-4.03H3.29v2.53A9.75 9.75 0 0 0 12 21.99z"/>
+
+                    <path fill="#FBBC05"
+                        d="M6.54 14.09a5.86 5.86 0 0 1 0-3.75V7.81H3.29a9.99 9.99 0 0 0 0 8.81l3.25-2.53z"/>
+
+                    <path fill="#EA4335"
+                        d="M12 6.31c1.43 0 2.72.49 3.73 1.46l2.8-2.8C16.83 3.42 14.63 2.5 12 2.5a9.75 9.75 0 0 0-8.71 5.31l3.25 2.53C7.31 8.03 9.46 6.31 12 6.31z"/>
+
+                </svg>
+
+                Continue with Google
+
+            </button>
+
+
+            <div class="divider">
+                <span>Secure authentication</span>
+            </div>
+
+
+            <p class="info">
+                Sign in with your Google account to create or
+                join a DFG project session.
+            </p>
+
+            <div id="status" class="status"></div>
+
+        </div>
+
+
+        <div class="footer">
+            DFG • Discuss for Goal
+        </div>
+
+    </main>
+
+
+    <!-- Firebase -->
+
+    <script type="module">
+
+        import { initializeApp }
+        from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+
+        import {
+            getAuth,
+            GoogleAuthProvider,
+            signInWithPopup
+        }
+        from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
+
+        const firebaseConfig = {
+
+            apiKey: "AIzaSyBwf22B0RtBxIdS3-gpB2y4BJan-X7pgnM",
+
+            authDomain:
+                "discuss-for-goal.firebaseapp.com",
+
+            projectId:
+                "discuss-for-goal",
+
+            storageBucket:
+                "discuss-for-goal.firebasestorage.app",
+
+            messagingSenderId:
+                "754285298177",
+
+            appId:
+                "1:754285298177:web:f77f192ca9ef93980cf600",
+
+            measurementId:
+                "G-920R07DK0Y"
+        };
+
+
+        const app = initializeApp(firebaseConfig);
+
+        const auth = getAuth(app);
+
+        const provider = new GoogleAuthProvider();
+
+
+        const loginButton =
+            document.getElementById("googleLogin");
+
+        const status =
+            document.getElementById("status");
+
+
+        loginButton.addEventListener("click", async () => {
+
+            try {
+
+                loginButton.disabled = true;
+
+                loginButton.innerHTML =
+                    "Signing in...";
+
+                status.textContent =
+                    "Opening Google Sign-In...";
+
+
+                const result =
+                    await signInWithPopup(
+                        auth,
+                        provider
+                    );
+
+
+                const user = result.user;
+
+                console.log("User:", user);
+
+                console.log(
+                    "Name:",
+                    user.displayName
+                );
+
+                console.log(
+                    "Email:",
+                    user.email
+                );
+
+
+                status.textContent =
+                    "Login successful!";
+
+
+                /*
+                 * Temporary next page.
+                 * Later we will connect this
+                 * to the Create / Join Session page.
+                 */
+
+                window.location.href =
+                    "/dashboard";
+
+
+            } catch (error) {
+
+                console.error(error);
+
+                status.textContent =
+                    "Google Sign-In failed. Please try again.";
+
+                loginButton.disabled = false;
+
+                loginButton.innerHTML =
+                    "Continue with Google";
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>

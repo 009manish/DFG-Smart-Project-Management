@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DFG - Invite Members</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+
+            font-family: Arial, sans-serif;
+
+            color: white;
+
+            background:
+                radial-gradient(circle at 10% 20%, #102d72 0%, transparent 30%),
+                radial-gradient(circle at 90% 20%, #35136b 0%, transparent 32%),
+                linear-gradient(135deg, #020817, #080b2b, #10052b);
+        }
+
+
+        /* HEADER */
+
+        header {
+            height: 78px;
+
+            padding: 0 45px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            background: rgba(2, 8, 23, 0.7);
+
+            border-bottom: 1px solid rgba(130, 140, 255, 0.15);
+
+            backdrop-filter: blur(15px);
+        }
+
+
+        .logo {
+            font-size: 38px;
+
+            font-weight: 800;
+
+            letter-spacing: -3px;
+
+            background: linear-gradient(
+                90deg,
+                #168cff,
+                #8b45ff
+            );
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+        }
+
+
+        .status {
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            color: #8e9abb;
+
+            font-size: 14px;
+        }
+
+
+        .status-dot {
+            width: 9px;
+
+            height: 9px;
+
+            border-radius: 50%;
+
+            background: #39d98a;
+
+            box-shadow: 0 0 12px #39d98a;
+        }
+
+
+        /* MAIN */
+
+        .main {
+            width: min(900px, 92%);
+
+            margin: auto;
+
+            padding: 55px 0;
+        }
+
+
+        .heading {
+            text-align: center;
+
+            margin-bottom: 35px;
+        }
+
+
+        .success-icon {
+            width: 65px;
+
+            height: 65px;
+
+            margin: 0 auto 18px;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 30px;
+
+            background: rgba(50, 220, 140, 0.12);
+
+            border: 1px solid rgba(50, 220, 140, 0.35);
+
+            color: #4ce39b;
+        }
+
+
+        .heading h1 {
+            font-size: 38px;
+
+            margin-bottom: 10px;
+        }
+
+
+        .heading h1 span {
+            background: linear-gradient(
+                90deg,
+                #238cff,
+                #984cff
+            );
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+        }
+
+
+        .heading p {
+            color: #919fbe;
+
+            font-size: 16px;
+        }
+
+
+        /* CARD */
+
+        .card {
+            background: rgba(7, 13, 39, 0.88);
+
+            border: 1px solid rgba(120, 135, 255, 0.2);
+
+            border-radius: 22px;
+
+            padding: 35px;
+
+            box-shadow:
+                0 25px 70px rgba(0, 0, 0, 0.4);
+
+            backdrop-filter: blur(18px);
+        }
+
+
+        .project-title {
+            text-align: center;
+
+            font-size: 22px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .project-goal {
+            text-align: center;
+
+            color: #8795b5;
+
+            line-height: 1.5;
+
+            margin-bottom: 30px;
+        }
+
+
+        /* CODE */
+
+        .code-section {
+            text-align: center;
+
+            padding: 28px;
+
+            border-radius: 17px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(25, 110, 255, 0.08),
+                    rgba(125, 55, 255, 0.08)
+                );
+
+            border: 1px solid rgba(100, 120, 255, 0.2);
+
+            margin-bottom: 30px;
+        }
+
+
+        .code-label {
+            color: #8290b0;
+
+            font-size: 13px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+
+            margin-bottom: 12px;
+        }
+
+
+        .code {
+            font-size: 34px;
+
+            font-weight: 800;
+
+            letter-spacing: 5px;
+
+            margin-bottom: 18px;
+
+            background: linear-gradient(
+                90deg,
+                #2c91ff,
+                #a04dff
+            );
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+        }
+
+
+        .copy-btn {
+            padding: 11px 24px;
+
+            border-radius: 9px;
+
+            border: 1px solid rgba(110, 130, 255, 0.35);
+
+            background: transparent;
+
+            color: #dce3ff;
+
+            cursor: pointer;
+
+            font-weight: 600;
+
+            transition: 0.2s;
+        }
+
+
+        .copy-btn:hover {
+            background: rgba(100, 110, 255, 0.1);
+
+            transform: translateY(-1px);
+        }
+
+
+        /* MEMBERS */
+
+        .members-header {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 15px;
+        }
+
+
+        .members-header h2 {
+            font-size: 19px;
+        }
+
+
+        .count {
+            color: #8d9abc;
+
+            font-size: 14px;
+        }
+
+
+        .member {
+            display: flex;
+
+            align-items: center;
+
+            gap: 13px;
+
+            padding: 14px;
+
+            border-radius: 11px;
+
+            background: rgba(2, 8, 25, 0.65);
+
+            border: 1px solid rgba(90, 105, 150, 0.12);
+
+            margin-bottom: 9px;
+
+            transition: 0.2s;
+        }
+
+
+        .member:hover {
+            border-color: rgba(100, 120, 255, 0.25);
+
+            background: rgba(8, 17, 45, 0.75);
+        }
+
+
+        .member-avatar {
+            width: 38px;
+
+            height: 38px;
+
+            min-width: 38px;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: linear-gradient(
+                135deg,
+                #287cff,
+                #853cff
+            );
+
+            font-weight: bold;
+        }
+
+
+        .member-info {
+            flex: 1;
+        }
+
+
+        .member-name {
+            font-size: 14px;
+
+            font-weight: 600;
+        }
+
+
+        .member-role {
+            color: #687695;
+
+            font-size: 12px;
+
+            margin-top: 3px;
+        }
+
+
+        .online {
+            color: #42d895;
+
+            font-size: 12px;
+        }
+
+
+        .waiting {
+            color: #697694;
+
+            font-size: 12px;
+        }
+
+
+        /* START */
+
+        .start-section {
+            margin-top: 30px;
+
+            padding-top: 25px;
+
+            border-top: 1px solid rgba(100, 110, 150, 0.15);
+
+            text-align: center;
+        }
+
+
+        .start-btn {
+            display: block;
+
+            width: 100%;
+
+            height: 52px;
+
+            border: none;
+
+            border-radius: 11px;
+
+            color: white;
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            background: linear-gradient(
+                90deg,
+                #168cff,
+                #783cff
+            );
+
+            transition: 0.2s;
+
+            text-decoration: none;
+
+            text-align: center;
+
+            line-height: 52px;
+        }
+
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 12px 35px rgba(80, 80, 255, 0.25);
+        }
+
+
+        .note {
+            margin-top: 12px;
+
+            color: #596783;
+
+            font-size: 12px;
+        }
+
+
+        /* MOBILE */
+
+        @media (max-width: 600px) {
+
+            header {
+                padding: 0 20px;
+            }
+
+            .main {
+                padding: 40px 0;
+            }
+
+            .card {
+                padding: 24px;
+            }
+
+            .code {
+                font-size: 26px;
+            }
+
+            .members-header {
+                align-items: flex-start;
+
+                gap: 10px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- HEADER -->
+
+    <header>
+
+        <div class="logo">
+            DFG
+        </div>
+
+        <div class="status">
+
+            <div class="status-dot"></div>
+
+            Session Active
+
+        </div>
+
+    </header>
+
+
+    <!-- MAIN -->
+
+    <main class="main">
+
+
+        <div class="heading">
+
+            <div class="success-icon">
+                ✓
+            </div>
+
+            <h1>
+                Session <span>Created!</span>
+            </h1>
+
+            <p>
+                Your project space is ready. Invite your team members.
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+
+            <!-- PROJECT INFO -->
+
+            <div class="project-title">
+
+                {{ title }}
+
+            </div>
+
+
+            <div class="project-goal">
+
+                {{ goal }}
+
+            </div>
+
+
+            <!-- SESSION CODE -->
+
+            <div class="code-section">
+
+                <div class="code-label">
+
+                    Your Session Code
+
+                </div>
+
+
+                <div
+                    class="code"
+                    id="sessionCode">
+
+                    {{ session_code }}
+
+                </div>
+
+
+                <button
+                    class="copy-btn"
+                    onclick="copyCode()">
+
+                    Copy Code
+
+                </button>
+
+            </div>
+
+
+            <!-- MEMBERS HEADER -->
+
+            <div class="members-header">
+
+                <h2>
+                    Team Members
+                </h2>
+
+                <div
+                    class="count"
+                    id="memberCount">
+
+                    1 / {{ members }} Joined
+
+                </div>
+
+            </div>
+
+
+            <!-- LIVE MEMBERS -->
+
+            <div id="membersContainer">
+
+                <!-- Members loaded by JavaScript -->
+
+            </div>
+
+
+            <!-- START SESSION -->
+
+            <div class="start-section">
+
+                <a
+                    href="/start-session?session_id={{ session_id }}"
+                    class="start-btn">
+
+                    Start Session →
+
+                </a>
+
+
+                <div class="note">
+
+                    You can start collaborating once your team is ready.
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+    </main>
+
+
+    <script>
+
+
+        // =====================================================
+        // SESSION INFORMATION
+        // =====================================================
+
+        const sessionId = {{ session_id }};
+
+        const maxMembers = {{ members }};
+
+
+        // =====================================================
+        // COPY SESSION CODE
+        // =====================================================
+
+        function copyCode() {
+
+            const code =
+                document
+                    .getElementById("sessionCode")
+                    .innerText
+                    .trim();
+
+
+            navigator.clipboard
+                .writeText(code)
+                .then(function() {
+
+                    const button =
+                        document.querySelector(".copy-btn");
+
+                    button.innerText =
+                        "Copied ✓";
+
+
+                    setTimeout(function() {
+
+                        button.innerText =
+                            "Copy Code";
+
+                    }, 2000);
+
+                })
+
+                .catch(function() {
+
+                    alert(
+                        "Unable to copy the session code."
+                    );
+
+                });
+
+        }
+
+
+        // =====================================================
+        // LIVE MEMBER UPDATE
+        // =====================================================
+
+        function updateMembers() {
+
+            fetch(`/session-data/${sessionId}`)
+
+                .then(function(response) {
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            "Unable to fetch session data"
+                        );
+
+                    }
+
+                    return response.json();
+
+                })
+
+                .then(function(data) {
+
+
+                    const container =
+                        document.getElementById(
+                            "membersContainer"
+                        );
+
+
+                    const count =
+                        document.getElementById(
+                            "memberCount"
+                        );
+
+
+                    // Update count
+
+                    count.innerText =
+                        `${data.members.length} / ${maxMembers} Joined`;
+
+
+                    // Clear current list
+
+                    container.innerHTML = "";
+
+
+                    // =================================================
+                    // JOINED MEMBERS
+                    // =================================================
+
+                    data.members.forEach(
+                        function(member, index) {
+
+
+                            const memberDiv =
+                                document.createElement("div");
+
+
+                            memberDiv.className =
+                                "member";
+
+
+                            let firstLetter = "?";
+
+
+                            if (member.name) {
+
+                                firstLetter =
+                                    member.name
+                                        .charAt(0)
+                                        .toUpperCase();
+
+                            }
+
+
+                            const role =
+                                index === 0
+                                    ? "Session Host"
+                                    : "Team Member";
+
+
+                            memberDiv.innerHTML = `
+
+                                <div class="member-avatar">
+
+                                    ${firstLetter}
+
+                                </div>
+
+
+                                <div class="member-info">
+
+                                    <div class="member-name">
+
+                                        ${escapeHtml(member.name)}
+
+                                    </div>
+
+                                    <div class="member-role">
+
+                                        ${role}
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="online">
+
+                                    ● Online
+
+                                </div>
+
+                            `;
+
+
+                            container.appendChild(
+                                memberDiv
+                            );
+
+                        }
+                    );
+
+
+                    // =================================================
+                    // WAITING MEMBERS
+                    // =================================================
+
+                    const waitingSlots =
+                        Math.max(
+                            0,
+                            maxMembers -
+                            data.members.length
+                        );
+
+
+                    for (
+                        let i = 0;
+                        i < waitingSlots;
+                        i++
+                    ) {
+
+
+                        const waitingDiv =
+                            document.createElement("div");
+
+
+                        waitingDiv.className =
+                            "member";
+
+
+                        waitingDiv.innerHTML = `
+
+                            <div class="member-avatar">
+
+                                ?
+
+                            </div>
+
+
+                            <div class="member-info">
+
+                                <div class="member-name">
+
+                                    Waiting for member...
+
+                                </div>
+
+                                <div class="member-role">
+
+                                    Invite using the session code
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="waiting">
+
+                                Waiting
+
+                            </div>
+
+                        `;
+
+
+                        container.appendChild(
+                            waitingDiv
+                        );
+
+                    }
+
+                })
+
+
+                .catch(function(error) {
+
+                    console.log(
+                        "Live member update error:",
+                        error
+                    );
+
+                });
+
+        }
+
+
+        // =====================================================
+        // HTML SECURITY
+        // =====================================================
+
+        function escapeHtml(text) {
+
+            const div =
+                document.createElement("div");
+
+            div.textContent =
+                text || "";
+
+            return div.innerHTML;
+
+        }
+
+
+        // =====================================================
+        // INITIAL LOAD
+        // =====================================================
+
+        updateMembers();
+
+
+        // =====================================================
+        // LIVE UPDATE EVERY 2 SECONDS
+        // =====================================================
+
+        setInterval(
+            updateMembers,
+            2000
+        );
+
+
+    </script>
+
+
+</body>
+
+</html>

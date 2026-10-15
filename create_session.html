@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>DFG - Create Session</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            color: white;
+
+            background:
+                radial-gradient(circle at 10% 25%, #102d72 0%, transparent 30%),
+                radial-gradient(circle at 90% 20%, #35136b 0%, transparent 32%),
+                linear-gradient(135deg, #020817, #080b2b, #10052b);
+        }
+
+        /* HEADER */
+
+        header {
+            height: 78px;
+            padding: 0 45px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            border-bottom: 1px solid rgba(130, 140, 255, 0.15);
+
+            background: rgba(2, 8, 23, 0.7);
+            backdrop-filter: blur(15px);
+        }
+
+        .logo {
+            font-size: 38px;
+            font-weight: 800;
+            letter-spacing: -3px;
+
+            background: linear-gradient(90deg, #168cff, #8b45ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .back {
+            padding: 11px 20px;
+
+            border: 1px solid rgba(120, 135, 255, 0.3);
+            border-radius: 10px;
+
+            background: transparent;
+            color: #dce3ff;
+
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .back:hover {
+            background: rgba(100, 100, 255, 0.08);
+        }
+
+        /* MAIN */
+
+        .main {
+            width: min(1000px, 92%);
+            margin: auto;
+            padding: 55px 0;
+        }
+
+        .heading {
+            text-align: center;
+            margin-bottom: 38px;
+        }
+
+        .heading h1 {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .heading h1 span {
+            background: linear-gradient(90deg, #238cff, #984cff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .heading p {
+            color: #9da9c7;
+            font-size: 16px;
+        }
+
+        /* PROGRESS */
+
+        .steps {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+
+            margin-bottom: 38px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            color: #687593;
+            font-size: 14px;
+        }
+
+        .step.active {
+            color: #5d9dff;
+        }
+
+        .circle {
+            width: 28px;
+            height: 28px;
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border: 1px solid #485271;
+
+            font-size: 13px;
+        }
+
+        .step.active .circle {
+            background: linear-gradient(135deg, #168cff, #783cff);
+            border: none;
+            color: white;
+        }
+
+        .connector {
+            width: 65px;
+            height: 1px;
+            background: #343d5b;
+        }
+
+        /* FORM CARD */
+
+        .card {
+            background: rgba(7, 13, 39, 0.86);
+
+            border: 1px solid rgba(120, 135, 255, 0.2);
+
+            border-radius: 22px;
+
+            padding: 38px;
+
+            box-shadow:
+                0 25px 70px rgba(0, 0, 0, 0.4);
+
+            backdrop-filter: blur(18px);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 9px;
+        }
+
+        .hint {
+            color: #687695;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+
+            border: 1px solid #293456;
+            border-radius: 11px;
+
+            background: rgba(3, 9, 28, 0.8);
+
+            color: white;
+
+            padding: 15px;
+
+            font-size: 15px;
+
+            outline: none;
+
+            transition: 0.2s;
+        }
+
+        input {
+            height: 52px;
+        }
+
+        textarea {
+            min-height: 135px;
+            resize: vertical;
+            font-family: Arial, sans-serif;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #596cff;
+
+            box-shadow:
+                0 0 0 3px rgba(80, 90, 255, 0.08);
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: #596681;
+        }
+
+        /* MEMBERS */
+
+        .member-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .member-control {
+            display: flex;
+            align-items: center;
+
+            height: 52px;
+
+            border: 1px solid #293456;
+            border-radius: 11px;
+
+            background: rgba(3, 9, 28, 0.8);
+        }
+
+        .member-control button {
+            width: 45px;
+            height: 100%;
+
+            border: none;
+            background: transparent;
+
+            color: #8ea0c9;
+
+            font-size: 21px;
+            cursor: pointer;
+        }
+
+        .member-control button:hover {
+            color: white;
+        }
+
+        #members {
+            width: 55px;
+            height: 100%;
+
+            border: none;
+            border-left: 1px solid #293456;
+            border-right: 1px solid #293456;
+
+            border-radius: 0;
+
+            text-align: center;
+
+            padding: 0;
+        }
+
+        .member-note {
+            color: #71809f;
+            font-size: 13px;
+        }
+
+        /* BUTTON */
+
+        .bottom {
+            display: flex;
+            justify-content: flex-end;
+
+            margin-top: 35px;
+            padding-top: 25px;
+
+            border-top: 1px solid rgba(100, 110, 150, 0.15);
+        }
+
+        .create-btn {
+            min-width: 220px;
+            height: 52px;
+
+            border: none;
+            border-radius: 11px;
+
+            background: linear-gradient(
+                90deg,
+                #168cff,
+                #783cff
+            );
+
+            color: white;
+
+            font-size: 15px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .create-btn:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 12px 35px rgba(80, 80, 255, 0.25);
+        }
+
+        @media (max-width: 700px) {
+
+            header {
+                padding: 0 20px;
+            }
+
+            .main {
+                padding: 40px 0;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full {
+                grid-column: auto;
+            }
+
+            .card {
+                padding: 25px;
+            }
+
+            .heading h1 {
+                font-size: 32px;
+            }
+
+            .connector {
+                width: 25px;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <!-- HEADER -->
+
+    <header>
+
+        <div class="logo">
+            DFG
+        </div>
+
+        <button
+            class="back"
+            onclick="window.location.href='/dashboard'">
+
+            ← Back to Dashboard
+
+        </button>
+
+    </header>
+
+
+    <!-- MAIN -->
+
+    <main class="main">
+
+        <div class="heading">
+
+            <h1>
+                Create New <span>Session</span>
+            </h1>
+
+            <p>
+                Set up your project and bring your team together.
+            </p>
+
+        </div>
+
+
+        <!-- PROGRESS -->
+
+        <div class="steps">
+
+            <div class="step active">
+
+                <div class="circle">
+                    1
+                </div>
+
+                Session Details
+
+            </div>
+
+            <div class="connector"></div>
+
+            <div class="step">
+
+                <div class="circle">
+                    2
+                </div>
+
+                Invite Members
+
+            </div>
+
+            <div class="connector"></div>
+
+            <div class="step">
+
+                <div class="circle">
+                    3
+                </div>
+
+                Start Collaborating
+
+            </div>
+
+        </div>
+
+
+        <!-- FORM -->
+
+        <div class="card">
+
+            <form
+                action="/create-session"
+                method="POST">
+
+
+                <div class="form-grid">
+
+
+                    <!-- TITLE -->
+
+                    <div class="field full">
+
+                        <label for="title">
+                            1. Session / Project Title
+                        </label>
+
+                        <div class="hint">
+                            Give your project a short and meaningful title.
+                        </div>
+
+                        <input
+                            type="text"
+                            id="title"
+                            name="title"
+                            placeholder="e.g. Smart Project and Task Scheduler"
+                            maxlength="100"
+                            required>
+
+                    </div>
+
+
+                    <!-- GOAL -->
+
+                    <div class="field full">
+
+                        <label for="goal">
+                            2. Purpose / Goal
+                        </label>
+
+                        <div class="hint">
+                            What do you want your team to achieve?
+                        </div>
+
+                        <textarea
+                            id="goal"
+                            name="goal"
+                            placeholder="Describe the main goal of your project..."
+                            maxlength="500"
+                            required></textarea>
+
+                    </div>
+
+
+                    <!-- DISCUSSION -->
+
+                    <div class="field full">
+
+                        <label for="discussion">
+                            3. Discussion
+                        </label>
+
+                        <div class="hint">
+                            Add your initial discussion, requirements,
+                            ideas or tasks. DFG will extract actionable tasks.
+                        </div>
+
+                        <textarea
+                            id="discussion"
+                            name="discussion"
+                            placeholder="Example: Design the database, create the login page, implement authentication and test the application..."
+                            maxlength="2000"
+                            required></textarea>
+
+                    </div>
+
+
+                    <!-- MEMBERS -->
+
+                    <div class="field">
+
+                        <label for="members">
+                            4. Number of Members
+                        </label>
+
+                        <div class="hint">
+                            Total members including you.
+                        </div>
+
+                        <div class="member-box">
+
+                            <div class="member-control">
+
+                                <button
+                                    type="button"
+                                    onclick="changeMembers(-1)">
+                                    −
+                                </button>
+
+                                <input
+                                    type="number"
+                                    id="members"
+                                    name="members"
+                                    value="2"
+                                    min="2"
+                                    max="50"
+                                    readonly>
+
+                                <button
+                                    type="button"
+                                    onclick="changeMembers(1)">
+                                    +
+                                </button>
+
+                            </div>
+
+                            <span class="member-note">
+                                Minimum 2
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- BUTTON -->
+
+                <div class="bottom">
+
+                    <button
+                        type="submit"
+                        class="create-btn">
+
+                        Create Session →
+
+                    </button>
+
+                </div>
+
+
+            </form>
+
+        </div>
+
+    </main>
+
+
+    <script>
+
+        function changeMembers(amount) {
+
+            const input =
+                document.getElementById("members");
+
+            let value =
+                parseInt(input.value);
+
+            value += amount;
+
+            if (value < 2) {
+                value = 2;
+            }
+
+            if (value > 50) {
+                value = 50;
+            }
+
+            input.value = value;
+        }
+
+    </script>
+
+</body>
+
+</html>

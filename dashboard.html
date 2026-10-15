@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>DFG - Dashboard</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            color: white;
+
+            background:
+                radial-gradient(circle at 10% 20%, #102d72 0%, transparent 30%),
+                radial-gradient(circle at 90% 20%, #35136b 0%, transparent 30%),
+                linear-gradient(135deg, #020817, #080b2b, #10052b);
+        }
+
+        /* ---------------- HEADER ---------------- */
+
+        header {
+            height: 78px;
+            padding: 0 45px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            border-bottom: 1px solid rgba(130, 140, 255, 0.15);
+
+            background: rgba(2, 8, 23, 0.65);
+            backdrop-filter: blur(15px);
+        }
+
+        .logo {
+            font-size: 38px;
+            font-weight: 800;
+            letter-spacing: -3px;
+
+            background: linear-gradient(90deg, #168cff, #8b45ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+
+            border-radius: 50%;
+
+            background: linear-gradient(135deg, #287cff, #853cff);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-weight: bold;
+        }
+
+        .profile-name {
+            font-size: 14px;
+            color: #dce3ff;
+        }
+
+        /* ---------------- MAIN ---------------- */
+
+        .main {
+            width: min(1100px, 92%);
+            margin: auto;
+
+            padding: 70px 0;
+        }
+
+        .welcome {
+            text-align: center;
+            margin-bottom: 55px;
+        }
+
+        .welcome h1 {
+            font-size: 42px;
+            margin-bottom: 12px;
+        }
+
+        .welcome h1 span {
+            background: linear-gradient(90deg, #2d8cff, #9b4dff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .welcome p {
+            color: #9ba8c8;
+            font-size: 17px;
+        }
+
+        /* ---------------- CARDS ---------------- */
+
+        .cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+        }
+
+        .card {
+            position: relative;
+
+            padding: 38px;
+
+            min-height: 330px;
+
+            border-radius: 22px;
+
+            border: 1px solid rgba(120, 135, 255, 0.2);
+
+            background: rgba(7, 13, 39, 0.82);
+
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.35),
+                inset 0 0 40px rgba(80, 80, 255, 0.025);
+
+            backdrop-filter: blur(15px);
+
+            transition: 0.25s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+
+            border-color: rgba(100, 120, 255, 0.5);
+
+            box-shadow:
+                0 25px 70px rgba(0, 0, 0, 0.45),
+                0 0 30px rgba(70, 80, 255, 0.08);
+        }
+
+        .icon {
+            width: 60px;
+            height: 60px;
+
+            border-radius: 16px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 28px;
+
+            background: linear-gradient(
+                135deg,
+                rgba(30, 130, 255, 0.18),
+                rgba(130, 55, 255, 0.18)
+            );
+
+            border: 1px solid rgba(100, 120, 255, 0.2);
+
+            margin-bottom: 25px;
+        }
+
+        .card h2 {
+            font-size: 25px;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            color: #98a5c4;
+            line-height: 1.6;
+            font-size: 15px;
+
+            margin-bottom: 30px;
+        }
+
+        /* ---------------- BUTTONS ---------------- */
+
+        .button {
+            width: 100%;
+            height: 52px;
+
+            border: none;
+            border-radius: 11px;
+
+            color: white;
+
+            font-size: 15px;
+            font-weight: 600;
+
+            cursor: pointer;
+
+            background: linear-gradient(
+                90deg,
+                #168cff,
+                #783cff
+            );
+
+            transition: 0.2s;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 10px 30px rgba(80, 80, 255, 0.25);
+        }
+
+        .join-button {
+            background: transparent;
+
+            border: 1px solid rgba(100, 130, 255, 0.45);
+        }
+
+        .join-button:hover {
+            background: rgba(80, 90, 255, 0.08);
+        }
+
+        /* ---------------- FOOTER ---------------- */
+
+        .footer {
+            text-align: center;
+
+            margin-top: 55px;
+
+            color: #586684;
+
+            font-size: 13px;
+        }
+
+        /* ---------------- RESPONSIVE ---------------- */
+
+        @media (max-width: 750px) {
+
+            header {
+                padding: 0 20px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome h1 {
+                font-size: 32px;
+            }
+
+            .main {
+                padding: 45px 0;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <!-- HEADER -->
+
+    <header>
+
+        <div class="logo">
+            DFG
+        </div>
+
+        <div class="profile">
+
+            <div class="avatar">
+                M
+            </div>
+
+            <div class="profile-name">
+                Welcome
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- MAIN -->
+
+    <main class="main">
+
+        <section class="welcome">
+
+            <h1>
+                Welcome to <span>DFG</span>
+            </h1>
+
+            <p>
+                Discuss. Organize. Prioritize. Achieve.
+            </p>
+
+        </section>
+
+
+        <!-- ACTION CARDS -->
+
+        <section class="cards">
+
+
+            <!-- CREATE SESSION -->
+
+            <div class="card">
+
+                <div class="icon">
+                    ＋
+                </div>
+
+                <h2>
+                    Create Session
+                </h2>
+
+                <p>
+                    Start a new project session, define your
+                    goal, add team members, and turn your
+                    discussion into actionable tasks.
+                </p>
+
+                <button
+                    class="button"
+                    onclick="createSession()">
+
+                    Create New Session →
+
+                </button>
+
+            </div>
+
+
+            <!-- JOIN SESSION -->
+
+            <div class="card">
+
+                <div class="icon">
+                    ⇥
+                </div>
+
+                <h2>
+                    Join Session
+                </h2>
+
+                <p>
+                    Have a session code from your team leader?
+                    Join an existing project session and
+                    collaborate with your team.
+                </p>
+
+                <button
+                    class="button join-button"
+                    onclick="joinSession()">
+
+                    Join Existing Session →
+
+                </button>
+
+            </div>
+
+
+        </section>
+
+
+        <div class="footer">
+
+            DFG • Discuss for Goal
+
+        </div>
+
+    </main>
+
+
+    <script>
+
+        function createSession() {
+
+            window.location.href =
+                "/create-session";
+
+        }
+
+
+        function joinSession() {
+            window.location.href = "/join-session";
+        }
+
+    </script>
+
+</body>
+
+</html>

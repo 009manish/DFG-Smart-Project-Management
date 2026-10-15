@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>DFG - Session Joined</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-family: Arial, sans-serif;
+            color: white;
+
+            background:
+                radial-gradient(circle at 10% 20%, #102d72 0%, transparent 30%),
+                radial-gradient(circle at 90% 20%, #35136b 0%, transparent 32%),
+                linear-gradient(135deg, #020817, #080b2b, #10052b);
+        }
+
+        .card {
+            width: 500px;
+            padding: 45px;
+
+            text-align: center;
+
+            background: rgba(7, 13, 39, 0.92);
+
+            border: 1px solid rgba(120, 135, 255, 0.2);
+
+            border-radius: 22px;
+
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
+        }
+
+        .logo {
+            font-size: 40px;
+            font-weight: 800;
+            margin-bottom: 25px;
+
+            background: linear-gradient(
+                90deg,
+                #168cff,
+                #8b45ff
+            );
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .success {
+            width: 70px;
+            height: 70px;
+
+            margin: 0 auto 20px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            font-size: 32px;
+
+            color: #42df9b;
+
+            background: rgba(50, 220, 140, 0.1);
+
+            border: 1px solid rgba(50, 220, 140, 0.3);
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #8e9abb;
+            line-height: 1.5;
+            margin-bottom: 30px;
+        }
+
+        .session-box {
+            padding: 25px;
+
+            border-radius: 15px;
+
+            background: rgba(20, 35, 90, 0.35);
+
+            border: 1px solid rgba(100, 120, 255, 0.2);
+        }
+
+        .session-title {
+            color: #dfe5ff;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .code-label {
+            color: #7886a7;
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .code {
+            margin-top: 8px;
+
+            font-size: 30px;
+            font-weight: 800;
+            letter-spacing: 4px;
+
+            background: linear-gradient(
+                90deg,
+                #2c91ff,
+                #a04dff
+            );
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .waiting {
+            margin-top: 25px;
+
+            color: #8e9abb;
+            font-size: 14px;
+        }
+
+        .loader {
+            width: 18px;
+            height: 18px;
+
+            display: inline-block;
+
+            margin-right: 8px;
+
+            border: 2px solid #46557d;
+            border-top-color: #5c8cff;
+
+            border-radius: 50%;
+
+            animation: spin 1s linear infinite;
+
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .back-btn {
+            width: 100%;
+            height: 50px;
+
+            margin-top: 25px;
+
+            border: none;
+            border-radius: 10px;
+
+            color: white;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            background: linear-gradient(
+                90deg,
+                #168cff,
+                #783cff
+            );
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="card">
+
+        <div class="logo">
+            DFG
+        </div>
+
+        <div class="success">
+            ✓
+        </div>
+
+        <h1>
+            Joined Successfully!
+        </h1>
+
+        <div class="subtitle">
+            You have successfully joined the project session.
+        </div>
+
+        <div class="session-box">
+
+            <div class="session-title">
+                {{ session.title }}
+            </div>
+
+            <div class="code-label">
+                Session Code
+            </div>
+
+            <div class="code">
+                {{ session_code }}
+            </div>
+
+        </div>
+
+        <div class="waiting">
+
+            <span class="loader"></span>
+
+            Waiting for the session to start...
+
+        </div>
+
+        <button
+            class="back-btn"
+            onclick="window.location.href='/dashboard'">
+
+            Back to Dashboard
+
+        </button>
+
+    </div>
+<script>
+    const sessionId = {{ session.session_id }};
+
+    async function checkSessionStatus() {
+        try {
+            const response = await fetch(
+                `/session-status/${sessionId}`
+            );
+
+            if (!response.ok) {
+                return;
+            }
+
+            const data = await response.json();
+
+            if (data.started) {
+                window.location.href =
+                    `/start-session?session_id=${sessionId}`;
+            }
+        } catch (error) {
+            console.log("Session status check failed:", error);
+        }
+    }
+
+    checkSessionStatus();
+    setInterval(checkSessionStatus, 2000);
+</script>
+</body>
+</html>
