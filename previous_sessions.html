@@ -1,0 +1,392 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DFG - Previous Sessions</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            color: white;
+            background:
+                radial-gradient(circle at 10% 20%, #102d72 0%, transparent 30%),
+                radial-gradient(circle at 90% 20%, #35136b 0%, transparent 30%),
+                linear-gradient(135deg, #020817, #080b2b, #10052b);
+        }
+
+        /* HEADER */
+        header {
+            height: 78px;
+            padding: 0 45px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(130, 140, 255, 0.15);
+            background: rgba(2, 8, 23, 0.65);
+            backdrop-filter: blur(15px);
+        }
+
+        .logo {
+            font-size: 38px;
+            font-weight: 800;
+            letter-spacing: -3px;
+            background: linear-gradient(90deg, #168cff, #8b45ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .back-button {
+            padding: 12px 22px;
+            border: 1px solid rgba(100, 130, 255, 0.4);
+            border-radius: 10px;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .back-button:hover {
+            background: rgba(80, 90, 255, 0.12);
+        }
+
+        /* MAIN */
+        .main {
+            width: min(1100px, 92%);
+            margin: auto;
+            padding: 65px 0;
+        }
+
+        .page-heading {
+            margin-bottom: 40px;
+        }
+
+        .page-heading h1 {
+            font-size: 38px;
+            margin-bottom: 12px;
+        }
+
+        .page-heading h1 span {
+            background: linear-gradient(90deg, #2d8cff, #9b4dff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-heading p {
+            color: #9ba8c8;
+            font-size: 16px;
+        }
+
+        .session-count {
+            color: #9ba8c8;
+            margin-bottom: 22px;
+            font-size: 14px;
+        }
+
+        /* SESSION GRID */
+        .sessions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        .session-card {
+            padding: 28px;
+            border-radius: 18px;
+            border: 1px solid rgba(120, 135, 255, 0.2);
+            background: rgba(7, 13, 39, 0.82);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transition: 0.25s;
+        }
+
+        .session-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(100, 120, 255, 0.5);
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .session-code {
+            color: #8e9bff;
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .participation {
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            background: rgba(45, 140, 255, 0.15);
+            color: #70b5ff;
+        }
+
+        .session-card h2 {
+            font-size: 21px;
+            margin-bottom: 12px;
+        }
+
+        .goal {
+            color: #98a5c4;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 22px;
+        }
+
+        .session-details {
+            border-top: 1px solid rgba(130, 140, 255, 0.13);
+            padding-top: 18px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .detail-label {
+            color: #71809f;
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
+
+        .detail-value {
+            color: #dce3ff;
+            font-size: 13px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 11px;
+            border-radius: 20px;
+            font-size: 11px;
+        }
+
+        .completed {
+            color: #55dfa5;
+            background: rgba(35, 200, 130, 0.12);
+        }
+
+        .active {
+            color: #70b5ff;
+            background: rgba(45, 140, 255, 0.12);
+        }
+
+        .not-started {
+            color: #e9bd65;
+            background: rgba(233, 189, 101, 0.12);
+        }
+
+        /* EMPTY STATE */
+        .empty-state {
+            text-align: center;
+            padding: 75px 20px;
+            border: 1px solid rgba(120, 135, 255, 0.2);
+            border-radius: 20px;
+            background: rgba(7, 13, 39, 0.82);
+        }
+
+        .empty-icon {
+            font-size: 55px;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h2 {
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .empty-state p {
+            color: #98a5c4;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 14px 25px;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            background: linear-gradient(90deg, #168cff, #783cff);
+            cursor: pointer;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 55px;
+            color: #586684;
+            font-size: 13px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 750px) {
+            header {
+                padding: 0 20px;
+            }
+
+            .sessions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-heading h1 {
+                font-size: 30px;
+            }
+
+            .main {
+                padding: 45px 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">DFG</div>
+
+        <a href="{{ url_for('dashboard') }}" class="back-button">
+            ← Back to Dashboard
+        </a>
+    </header>
+
+    <main class="main">
+
+        <section class="page-heading">
+            <h1>Previous <span>Sessions</span></h1>
+            <p>Revisit your projects, sessions and collaboration history.</p>
+        </section>
+
+        <div class="session-count">
+            {{ sessions|length }} session(s) found
+        </div>
+
+        {% if sessions %}
+
+        <section class="sessions-grid">
+
+            {% for session in sessions %}
+
+            <div class="session-card">
+
+                <div class="card-top">
+
+                    <div class="session-code">
+                        DFG-{{ "%04d"|format(session.session_id) }}
+                    </div>
+
+                    <div class="participation">
+                        {{ session.participation }}
+                    </div>
+
+                </div>
+
+                <h2>{{ session.title }}</h2>
+
+                <p class="goal">
+                    {{ session.goal }}
+                </p>
+
+                <div class="session-details">
+
+                    <div>
+                        <div class="detail-label">Created On</div>
+                        <div class="detail-value">
+                            {{ session.created_at.strftime('%d %b %Y') if session.created_at else 'N/A' }}
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="detail-label">Team Capacity</div>
+                        <div class="detail-value">
+                            {{ session.max_members }} Members
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="detail-label">Session Status</div>
+
+                        {% if session.is_ended %}
+                            <span class="status completed">Completed</span>
+                        {% elif session.is_started %}
+                            <span class="status active">In Progress</span>
+                        {% else %}
+                            <span class="status not-started">Not Started</span>
+                        {% endif %}
+
+                    </div>
+
+                    <div>
+                        <div class="detail-label">Session ID</div>
+                        <div class="detail-value">
+                            #{{ session.session_id }}
+                        </div>
+                    </div>
+                    <div style="grid-column: 1 / -1; margin-top: 10px;">
+                        <a href="/session-activity/{{ session.session_id }}"
+                            class="button"
+                            style="display: block; text-align: center;">
+                            View Activity →
+                        </a>
+                        {% if session.participation == 'Created'
+                            and not session.is_started
+                            and not session.is_ended %}
+                            <a href="{{ url_for('start_session', session_id=session.session_id) }}"
+                                class="button start-session-btn"
+                                style="display: block; text-align: center; margin-top: 10px;">
+                                Start Session →
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </section>
+
+        {% else %}
+
+        <section class="empty-state">
+
+            <div class="empty-icon">◷</div>
+
+            <h2>No Previous Sessions</h2>
+
+            <p>
+                You haven't created or joined any project sessions yet.
+                Start a new session and collaborate with your team!
+            </p>
+
+            <a href="{{ url_for('create_session') }}" class="button">
+                Create New Session →
+            </a>
+
+        </section>
+
+        {% endif %}
+
+        <div class="footer">
+            DFG • Discuss for Goal
+        </div>
+
+    </main>
+
+</body>
+</html>

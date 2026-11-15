@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DFG - Project Summary</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            color: white;
+            background:
+                radial-gradient(circle at 10% 20%, #102d72 0%, transparent 30%),
+                radial-gradient(circle at 90% 20%, #35136b 0%, transparent 30%),
+                linear-gradient(135deg, #020817, #080b2b, #10052b);
+            padding: 40px 5%;
+        }
+
+        .container {
+            max-width: 1150px;
+            margin: auto;
+        }
+
+        h1 {
+            color: #55a0ff;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #9ba8c8;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: rgba(13, 22, 55, 0.9);
+            border: 1px solid rgba(120, 135, 255, 0.25);
+            border-radius: 15px;
+            padding: 24px;
+            margin-bottom: 22px;
+        }
+
+        .card h2 {
+            margin-bottom: 18px;
+            color: #8ebaff;
+        }
+
+        .project-info p {
+            margin-top: 12px;
+            color: #b8c8e8;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 18px;
+            margin-bottom: 22px;
+        }
+
+        .stat-card {
+            background: rgba(13, 22, 55, 0.9);
+            border: 1px solid rgba(120, 135, 255, 0.25);
+            border-radius: 15px;
+            padding: 22px;
+        }
+
+        .stat-card p {
+            color: #9ba8c8;
+            margin-bottom: 12px;
+        }
+
+        .stat-card h2 {
+            color: #55a0ff;
+            font-size: 30px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 13px;
+            background: #202b50;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: {{ progress }}%;
+            background: linear-gradient(90deg, #168cff, #783cff);
+            border-radius: 20px;
+            transition: width 0.4s ease;
+        }
+
+        .progress-text {
+            color: #b8c8e8;
+            margin-top: 12px;
+        }
+
+        .task-item {
+            background: rgba(8, 15, 43, 0.8);
+            border: 1px solid #263966;
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 13px;
+        }
+
+        .task-item h3 {
+            margin-bottom: 10px;
+        }
+
+        .task-item p {
+            color: #aab8d6;
+            margin-top: 7px;
+        }
+
+        .priority {
+            color: #ffbd45 !important;
+        }
+
+        .status {
+            color: #8ebaff !important;
+        }
+
+        .member-item {
+            padding: 13px 0;
+            border-bottom: 1px solid #263966;
+            color: #b8c8e8;
+        }
+
+        .member-item:last-child {
+            border-bottom: none;
+        }
+
+        .download-btn {
+            display: inline-block;
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            background: linear-gradient(90deg, #168cff, #783cff);
+            cursor: pointer;
+        }
+
+        .download-btn:hover {
+            opacity: 0.9;
+        }
+
+        .empty {
+            color: #9ba8c8;
+        }
+
+        .download-confirmation {
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        .download-confirmation h3 {
+            color: #8ebaff;
+            margin-bottom: 12px;
+        }
+
+        .download-confirmation p {
+            color: #9ba8c8;
+            margin-bottom: 18px;
+        }
+
+        .confirmation-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .confirmation-buttons button {
+            min-width: 120px;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .yes-btn {
+            background: #16a34a;
+        }
+
+        .no-btn {
+            background: #dc3545;
+        }
+
+        #thankYouMessage {
+            margin-top: 25px;
+            padding: 25px;
+            border: 1px solid #16a34a;
+            border-radius: 12px;
+            background: rgba(22, 163, 74, 0.10);
+        }
+
+        #thankYouMessage h2 {
+            color: #4ade80;
+        }
+
+        #downloadAgain a {
+            display: inline-block;
+            margin-top: 15px;
+            color: #55a0ff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        @media(max-width: 600px) {
+            body {
+                padding: 25px 4%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <h1>Project Summary Dashboard</h1>
+
+    <p class="subtitle">
+        Your team's project overview and task assignments.
+    </p>
+
+    <div class="card project-info">
+        <h2>{{ session.title }}</h2>
+
+        <p><strong>Session ID:</strong> {{ session.session_id }}</p>
+        <p><strong>Project Goal:</strong> {{ session.goal }}</p>
+        <p><strong>Team Leader:</strong> {{ session.leader_name }}</p>
+    </div>
+
+    <div class="stats">
+
+        <div class="stat-card">
+            <p>Total Tasks</p>
+            <h2>{{ total_tasks }}</h2>
+        </div>
+
+        <div class="stat-card">
+            <p>Completed Tasks</p>
+            <h2>{{ completed_tasks }}</h2>
+        </div>
+
+        <div class="stat-card">
+            <p>Team Members</p>
+            <h2>{{ members|length }}</h2>
+        </div>
+
+        <div class="stat-card">
+            <p>Overall Progress</p>
+            <h2>{{ progress }}%</h2>
+        </div>
+
+    </div>
+
+    <div class="card">
+        <h2>Goal Progress</h2>
+
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+
+        <p class="progress-text">
+            {{ completed_tasks }} out of {{ total_tasks }} tasks completed
+        </p>
+    </div>
+
+    <div class="card">
+        <h2>Task Assignments</h2>
+
+        {% for task in tasks %}
+
+        <div class="task-item">
+
+            <h3>{{ loop.index }}. {{ task.title }}</h3>
+
+            <p>
+                <strong>Assigned To:</strong>
+                {{ task.assignee_name or "Not Assigned" }}
+            </p>
+
+            <p class="priority">
+                Priority: {{ task.priority }}
+            </p>
+
+            <p class="status">
+                Status: {{ task.status }}
+            </p>
+
+        </div>
+
+        {% else %}
+
+        <p class="empty">No tasks available.</p>
+
+        {% endfor %}
+    </div>
+
+    <div class="card">
+        <h2>Team Members</h2>
+
+        {% for member in members %}
+
+        <div class="member-item">
+            <strong>{{ member.name }}</strong>
+            <p>{{ member.email }}</p>
+        </div>
+
+        {% else %}
+
+        <p class="empty">No team members found.</p>
+
+        {% endfor %}
+    </div>
+    <div class="card">
+        <a class="download-btn"
+            href="{{ url_for('download_project_report', session_id=session.session_id) }}">
+            Download Project Report ↓
+        </a>
+        <div class="download-confirmation">
+            <h3 id="confirmationTitle">Have you downloaded your project report?</h3>
+            <p id="confirmationText">Please confirm before leaving DFG.</p>
+            <div class="confirmation-buttons" id="confirmationButtons">
+                <button type="button"
+                    class="yes-btn"
+                    onclick="confirmDownload(true)">
+                    Yes
+                </button>
+                <button type="button"
+                    class="no-btn"
+                    onclick="confirmDownload(false)">
+                    No
+                </button>
+            </div>
+            <div id="thankYouMessage" style="display:none;">
+                <h2>Thank You for Using DFG! ❤️</h2>
+                <p>We hope you enjoyed collaborating with DFG.</p>
+            </div>
+            <div id="downloadAgain" style="display:none;">
+                <p>No problem! You can download your report below.</p>
+                <a href="{{ url_for('download_project_report', session_id=session.session_id) }}">
+                    Download Project Report Again ↓
+                </a>
+            </div>
+        </div>
+    </div>
+    <script>
+        function confirmDownload(answer) {
+            if (answer === true) {
+                document.getElementById("confirmationButtons").style.display = "none";
+                document.querySelector(".download-btn").style.display = "none";
+                document.getElementById("downloadAgain").style.display = "none";
+                document.getElementById("confirmationTitle").style.display = "none";
+                document.getElementById("confirmationText").style.display = "none";
+                document.getElementById("thankYouMessage").style.display = "block";
+            } else {
+                document.querySelector(".download-btn").style.display = "none";
+                document.getElementById("downloadAgain").style.display = "block";
+            }
+        }
+    </script>
+</div>
+</body>
+</html>

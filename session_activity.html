@@ -1,0 +1,331 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DFG - Session Activity</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            color: white;
+            background:
+                radial-gradient(circle at 10% 20%, #102d72 0%, transparent 30%),
+                radial-gradient(circle at 90% 20%, #35136b 0%, transparent 30%),
+                linear-gradient(135deg, #020817, #080b2b, #10052b);
+        }
+
+        header {
+            height: 78px;
+            padding: 0 45px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(130, 140, 255, 0.15);
+            background: rgba(2, 8, 23, 0.65);
+        }
+
+        .logo {
+            font-size: 38px;
+            font-weight: 800;
+            letter-spacing: -3px;
+            background: linear-gradient(90deg, #168cff, #8b45ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .back-button {
+            padding: 12px 22px;
+            border: 1px solid rgba(100, 130, 255, 0.4);
+            border-radius: 10px;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .main {
+            width: min(900px, 92%);
+            margin: auto;
+            padding: 60px 0;
+        }
+
+        .heading {
+            margin-bottom: 35px;
+        }
+
+        .heading h1 {
+            font-size: 36px;
+            margin-bottom: 12px;
+        }
+
+        .heading h1 span {
+            background: linear-gradient(90deg, #2d8cff, #9b4dff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .heading p {
+            color: #9ba8c8;
+            font-size: 15px;
+        }
+
+        .summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            padding: 22px;
+            margin-bottom: 35px;
+            border-radius: 15px;
+            border: 1px solid rgba(120, 135, 255, 0.2);
+            background: rgba(7, 13, 39, 0.82);
+        }
+
+        .summary-label {
+            color: #8c9abb;
+            font-size: 13px;
+            margin-bottom: 7px;
+        }
+
+        .summary-value {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .timeline-title {
+            font-size: 22px;
+            margin-bottom: 25px;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 35px;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            bottom: 15px;
+            width: 2px;
+            background: linear-gradient(#168cff, #853cff);
+        }
+
+        .activity {
+            position: relative;
+            margin-bottom: 25px;
+            padding: 24px;
+            border-radius: 16px;
+            border: 1px solid rgba(120, 135, 255, 0.2);
+            background: rgba(7, 13, 39, 0.85);
+        }
+
+        .activity::before {
+            content: "";
+            position: absolute;
+            left: -32px;
+            top: 27px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #398dff;
+            border: 3px solid #15123d;
+            box-shadow: 0 0 12px rgba(56, 141, 255, 0.6);
+        }
+
+        .activity-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .activity-type {
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            color: #75baff;
+            background: rgba(45, 140, 255, 0.15);
+        }
+
+        .activity-time {
+            color: #7888aa;
+            font-size: 12px;
+        }
+
+        .activity h3 {
+            font-size: 17px;
+            margin-bottom: 10px;
+        }
+
+        .activity-description {
+            color: #a2afd0;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .metadata {
+            margin-top: 15px;
+            padding: 13px;
+            border-radius: 9px;
+            background: rgba(35, 45, 90, 0.25);
+            color: #9ba8c8;
+            font-size: 12px;
+            line-height: 1.8;
+            overflow-wrap: anywhere;
+        }
+
+        .empty-state {
+            padding: 55px 20px;
+            text-align: center;
+            border: 1px solid rgba(120, 135, 255, 0.2);
+            border-radius: 16px;
+            background: rgba(7, 13, 39, 0.82);
+        }
+
+        .empty-state h2 {
+            margin-bottom: 12px;
+        }
+
+        .empty-state p {
+            color: #98a5c4;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 55px;
+            color: #586684;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 0 20px;
+            }
+
+            .heading h1 {
+                font-size: 29px;
+            }
+
+            .timeline {
+                padding-left: 28px;
+            }
+
+            .activity {
+                padding: 18px;
+            }
+
+            .summary {
+                padding: 17px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">DFG</div>
+
+        <a href="{{ url_for('previous_sessions') }}"
+           class="back-button">
+            ← Previous Sessions
+        </a>
+    </header>
+
+    <main class="main">
+
+        <section class="heading">
+            <h1>Session <span>Activity</span></h1>
+            <p>Complete collaboration history and activity timeline.</p>
+        </section>
+
+        <section class="summary">
+
+            <div>
+                <div class="summary-label">Session Code</div>
+                <div class="summary-value">
+                    DFG-{{ "%04d"|format(session_id) }}
+                </div>
+            </div>
+
+            <div>
+                <div class="summary-label">Total Activities</div>
+                <div class="summary-value">
+                    {{ activities|length }}
+                </div>
+            </div>
+
+        </section>
+
+        <h2 class="timeline-title">Activity Timeline</h2>
+
+        {% if activities %}
+
+        <section class="timeline">
+
+            {% for activity in activities %}
+
+            <div class="activity">
+
+                <div class="activity-top">
+
+                    <span class="activity-type">
+                        {{ activity.activity_type|replace('_', ' ') }}
+                    </span>
+
+                    <span class="activity-time">
+                        {{ activity.activity_time.strftime('%d %b %Y, %I:%M:%S %p') }}
+                    </span>
+
+                </div>
+
+                <h3>{{ activity.activity_type|replace('_', ' ') }}</h3>
+
+                <p class="activity-description">
+                    {{ activity.description }}
+                </p>
+
+                {% if activity.metadata %}
+
+                <div class="metadata">
+                    <strong>Additional Details</strong><br>
+                    {{ activity.metadata }}
+                </div>
+
+                {% endif %}
+
+            </div>
+
+            {% endfor %}
+
+        </section>
+
+        {% else %}
+
+        <section class="empty-state">
+            <h2>No Activities Found</h2>
+            <p>No activity records are available for this session yet.</p>
+        </section>
+
+        {% endif %}
+
+        <div class="footer">
+            DFG • Discuss for Goal
+        </div>
+
+    </main>
+</body>
+</html>

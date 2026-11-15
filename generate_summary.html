@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DFG - Generate Summary</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            color: white;
+            background:
+                radial-gradient(circle at 10% 20%, #102d72 0%, transparent 30%),
+                radial-gradient(circle at 90% 20%, #35136b 0%, transparent 30%),
+                linear-gradient(135deg, #020817, #080b2b, #10052b);
+            padding: 40px 5%;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        h1 {
+            color: #55a0ff;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            color: #9ba8c8;
+            margin-bottom: 30px;
+        }
+
+        .project-info, .task-card {
+            background: rgba(13, 22, 55, 0.9);
+            border: 1px solid rgba(120, 135, 255, 0.25);
+            border-radius: 15px;
+            padding: 22px;
+            margin-bottom: 20px;
+        }
+
+        .project-info p {
+            margin-top: 10px;
+            color: #b8c8e8;
+        }
+
+        .task-card h3 {
+            margin-bottom: 12px;
+        }
+
+        .task-card p {
+            color: #aab8d6;
+            margin-bottom: 15px;
+        }
+
+        .priority {
+            color: #ffbd45;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #8ebaff;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #354a82;
+            background: #080f2b;
+            color: white;
+            outline: none;
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            background: linear-gradient(90deg, #168cff, #783cff);
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .generate-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .empty-message {
+            color: #aab8d6;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <h1>Generate Project Summary</h1>
+
+    <p class="subtitle">
+        Assign extracted tasks to your team members.
+    </p>
+
+    <div class="project-info">
+        <h2>{{ session.title }}</h2>
+
+        <p><strong>Session ID:</strong> {{ session.session_id }}</p>
+        <p><strong>Project Goal:</strong> {{ session.goal }}</p>
+        <p><strong>Total Tasks:</strong> {{ tasks|length }}</p>
+        <p><strong>Team Members:</strong> {{ members|length }}</p>
+    </div>
+
+    <h2 style="margin-bottom: 20px;">Task Assignment</h2>
+
+    {% if tasks and members %}
+
+    <form method="POST"
+        action="{{ url_for('generate_summary', session_id=session.session_id) }}">
+
+        {% for task in tasks %}
+
+        <div class="task-card">
+
+            <h3>{{ loop.index }}. {{ task.title }}</h3>
+
+            <p>
+                {{ task.description or "No description available." }}
+            </p>
+
+            <div class="priority">
+                Priority: {{ task.priority }}
+            </div>
+
+            <label for="assignment_{{ task.task_id }}">
+                Assign to Team Member
+            </label>
+
+            <select
+                id="assignment_{{ task.task_id }}"
+                name="assignment_{{ task.task_id }}"
+                required>
+
+                <option value="">Select a member</option>
+
+                {% for member in members %}
+
+                <option
+                    value="{{ member.user_id }}"
+                    {% if task.assigned_to == member.user_id %}selected{% endif %}>
+
+                    {{ member.name }}
+
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+        {% endfor %}
+
+        <button class="generate-btn" type="submit">
+            Save Assignments & Generate Summary →
+        </button>
+
+    </form>
+
+    {% elif not tasks %}
+
+        <p class="empty-message">
+            No tasks found for this session.
+        </p>
+
+    {% else %}
+
+        <p class="empty-message">
+            No team members found for this session.
+        </p>
+
+    {% endif %}
+
+</div>
+</body>
+</html>

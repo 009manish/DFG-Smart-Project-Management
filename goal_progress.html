@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DFG - Goal Progress</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            color: white;
+            background:
+                radial-gradient(circle at 10% 20%, #102d72 0%, transparent 30%),
+                radial-gradient(circle at 90% 20%, #35136b 0%, transparent 30%),
+                linear-gradient(135deg, #020817, #080b2b, #10052b);
+            padding: 40px 5%;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        h1 {
+            color: #55a0ff;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            color: #9ba8c8;
+            margin-bottom: 30px;
+        }
+
+        .project-card {
+            background: rgba(13, 22, 55, 0.9);
+            border: 1px solid rgba(120, 135, 255, 0.25);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .project-card h2 {
+            margin-bottom: 12px;
+        }
+
+        .project-goal {
+            color: #aab8d6;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 22px;
+        }
+
+        .stat {
+            background: #080f2b;
+            border: 1px solid #263966;
+            border-radius: 10px;
+            padding: 16px;
+        }
+
+        .stat p {
+            color: #9ba8c8;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .stat h3 {
+            color: #55a0ff;
+            font-size: 25px;
+        }
+
+        .progress-bar {
+            height: 12px;
+            width: 100%;
+            background: #202b50;
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #168cff, #783cff);
+            border-radius: 20px;
+        }
+
+        .progress-text {
+            color: #b8c8e8;
+            font-size: 14px;
+        }
+
+        .task-heading {
+            color: #8ebaff;
+            margin: 25px 0 15px;
+        }
+
+        .task-item {
+            background: #080f2b;
+            border: 1px solid #263966;
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 13px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .task-details {
+            flex: 1;
+        }
+
+        .task-details h3 {
+            font-size: 16px;
+            margin-bottom: 9px;
+        }
+
+        .task-details p {
+            color: #9ba8c8;
+            font-size: 13px;
+            margin-top: 6px;
+        }
+
+        .priority {
+            color: #ffbd45 !important;
+        }
+
+        .status {
+            color: #8ebaff !important;
+        }
+
+        .completed {
+            color: #4ade80 !important;
+        }
+
+        .task-check {
+            width: 23px;
+            height: 23px;
+            accent-color: #22c55e;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .empty {
+            color: #9ba8c8;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            text-decoration: none;
+            color: white;
+            padding: 13px 22px;
+            border-radius: 9px;
+            background: linear-gradient(90deg, #168cff, #783cff);
+            margin-bottom: 25px;
+        }
+
+        @media(max-width: 600px) {
+            body {
+                padding: 25px 4%;
+            }
+
+            .task-item {
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <a href="/dashboard" class="back-btn">
+        ← Back to Dashboard
+    </a>
+    <h1>Goal Progress Dashboard</h1>
+    <p class="subtitle">
+        Track your assigned tasks and monitor your team's progress.
+    </p>
+    {% if projects %}
+        {% for project in projects %}
+        <div class="project-card">
+            <h2>{{ project.title }}</h2>
+            <p class="project-goal">
+                {{ project.goal }}
+            </p>
+            <div class="stats">
+                <div class="stat">
+                    <p>Total Project Tasks</p>
+                    <h3>{{ project.total_tasks }}</h3>
+                </div>
+                <div class="stat">
+                    <p>Completed Tasks</p>
+                    <h3>{{ project.completed_tasks }}</h3>
+                </div>
+                <div class="stat">
+                    <p>Overall Progress</p>
+                    <h3>{{ project.progress }}%</h3>
+                </div>
+            </div>
+            <h3>Overall Project Progress</h3>
+            <div class="progress-bar">
+                <div class="progress-fill"
+                    style="width: {{ project.progress }}%;">
+                </div>
+            </div>
+
+            <p class="progress-text">
+                {{ project.completed_tasks }} out of
+                {{ project.total_tasks }} tasks completed
+            </p>
+
+            <h3 class="task-heading">My Assigned Tasks</h3>
+
+            {% for task in project.tasks %}
+
+            <div class="task-item">
+
+                <div class="task-details">
+
+                    <h3>{{ task.title }}</h3>
+
+                    <p class="priority">
+                        Priority: {{ task.priority }}
+                    </p>
+
+                    <p class="{% if task.status|lower == 'completed' %}completed{% else %}status{% endif %}">
+                        Status: {{ task.status }}
+                    </p>
+
+                </div>
+                <form method="POST"
+                    action="{{ url_for('update_task_status', task_id=task.task_id) }}">
+                    <input type="hidden"
+                        name="status"
+                        value="{{ 'Pending' if task.status|lower == 'completed' else 'Completed' }}"
+                        id="status_{{ task.task_id }}">
+                    <input type="checkbox"
+                        class="task-check"
+                        aria-label="Mark {{ task.title }} completed"
+                        {% if task.status|lower == 'completed' %}checked{% endif %}
+                        onchange="this.form.submit()">
+                </form>
+            </div>
+            {% else %}
+            <p class="empty">
+                No tasks assigned to you in this project.
+            </p>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="project-card empty">
+            <h2>No Assigned Projects Yet</h2>
+            <p>Your assigned tasks will appear here once your
+            Team Leader assigns them.</p>
+        </div>
+    {% endif %}
+</div>
+</body>
+</html>

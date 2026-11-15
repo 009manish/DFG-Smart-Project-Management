@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DFG - OS Dashboard</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 35px;
+            background:
+                radial-gradient(circle at 10% 10%, #142d65 0, transparent 35%),
+                radial-gradient(circle at 90% 15%, #32105e 0, transparent 35%),
+                #070b20;
+            color: #ffffff;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            min-height: 100vh;
+        }
+
+        .header {
+            padding: 30px;
+            margin-bottom: 35px;
+            border: 1px solid #283c70;
+            border-radius: 20px;
+            background: linear-gradient(120deg, #101d42, #171039);
+            box-shadow: 0 10px 35px rgba(0,0,0,0.25);
+        }
+
+        .header h1 {
+            font-size: 34px;
+            margin: 0 0 12px;
+            background: linear-gradient(90deg, #42a5ff, #a46bff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: #a9bbdf;
+            font-size: 15px;
+        }
+
+        .header .status {
+            display: inline-block;
+            color: #4ade80 !important;
+            background: rgba(34,197,94,0.12);
+            border: 1px solid rgba(74,222,128,0.25);
+            padding: 9px 15px;
+            border-radius: 30px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .card {
+            position: relative;
+            overflow: hidden;
+            min-height: 190px;
+            padding: 27px;
+            background: linear-gradient(145deg, #131e40, #0c1430);
+            border: 1px solid #293c70;
+            border-radius: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #168bff, #9147ff);
+            opacity: 0.8;
+        }
+
+        .card:hover {
+            transform: translateY(-7px);
+            border-color: #7188ff;
+            box-shadow: 0 12px 35px rgba(55,100,255,0.2);
+        }
+
+        .card h3 {
+            margin-top: 5px;
+            font-size: 21px;
+        }
+
+        .card p {
+            color: #aabadd;
+            line-height: 1.6;
+            min-height: 45px;
+        }
+
+        .card small {
+            color: #70aaff;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .module {
+            display: none;
+            margin-top: 35px;
+            padding: 30px;
+            background: linear-gradient(145deg, #131e40, #0c1430);
+            border: 1px solid #293c70;
+            border-radius: 18px;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.2);
+        }
+
+        .module h2 {
+            margin-top: 0;
+            font-size: 27px;
+        }
+
+        .algorithm-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .algorithm-option {
+            padding: 15px;
+            background: #202d50;
+            border: 1px solid #34476f;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .algorithm-option:hover {
+            border-color: #7188ff;
+        }
+
+        button {
+            padding: 13px 21px;
+            border: none;
+            border-radius: 9px;
+            background: linear-gradient(90deg, #168bff, #743bff);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .back-btn {
+            background: #29375e;
+            margin-bottom: 20px;
+        }
+
+        #selectionMessage,
+        #memoryMessage,
+        #deadlockMessage,
+        #processMessage {
+            color: #9caed0;
+            margin-top: 15px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            min-width: 650px;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 13px;
+            border: 1px solid #34415d;
+            text-align: center;
+        }
+
+        .comparison-table th {
+            background: #202b45;
+        }
+
+        .comparison-table tr:hover td {
+            background: rgba(75,110,190,0.1);
+        }
+
+        .gantt-section {
+            margin: 25px 0;
+        }
+
+        .gantt-chart {
+            display: flex;
+            min-height: 55px;
+            overflow-x: auto;
+            background: #080d25;
+            border-radius: 8px;
+        }
+
+        .gantt-block {
+            min-width: 45px;
+            padding: 16px 5px;
+            text-align: center;
+            background: linear-gradient(135deg, #2563eb, #7045cf);
+            border-right: 2px solid #080d25;
+            color: white;
+        }
+
+        .gantt-timeline {
+            color: #aab8d5;
+            white-space: pre-wrap;
+        }
+
+        .best-result {
+            background: #202b45;
+            padding: 18px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        input {
+            accent-color: #7655ff;
+        }
+
+        @media (max-width: 1000px) {
+            .dashboard {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            .header,
+            .module {
+                padding: 20px;
+            }
+            .header h1 {
+                font-size: 27px;
+            }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .stat-card {
+            padding: 23px;
+            background: linear-gradient(145deg, #131e40, #0c1430);
+            border: 1px solid #293c70;
+            border-radius: 16px;
+            transition: 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: #7188ff;
+        }
+
+        .stat-icon {
+            font-size: 27px;
+            margin-bottom: 12px;
+        }
+
+        .stat-label {
+            color: #aabadd;
+            font-size: 14px;
+        }
+
+        .stat-value {
+            font-size: 30px;
+            font-weight: bold;
+            color: #64a5ff;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 900px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 500px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .summary-action {
+            margin-top: 35px;
+            padding: 25px;
+            text-align: center;
+            background: linear-gradient(145deg, #131e40, #0c1430);
+            border: 1px solid #293c70;
+            border-radius: 18px;
+        }
+
+        .summary-action p {
+            color: #aabadd;
+            margin: 10px 0 18px;
+        }
+
+        .summary-btn {
+            padding: 14px 30px;
+            font-size: 16px;
+            background: linear-gradient(90deg, #168bff, #9147ff);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>DFG | OS Dashboard</h1>
+        <p>Operating System Simulation Workspace</p>
+        <p class="status">● Collaboration Session Ended</p>
+        <h3>Team Leader Dashboard</h3>
+        <p>Session ID: {{ session.session_id }}</p>
+    </div>
+    <div class="dashboard">
+        <div class="card" onclick="openModule('cpuModule')">
+            <div style="font-size:32px;">⚡</div>
+            <h3>CPU Scheduling</h3>
+            <p>FCFS, SJF, SRTF, Priority and Round Robin</p>
+            <small>Open Module →</small>
+        </div>
+        <div class="card" onclick="openModule('memoryModule')">
+            <div style="font-size:32px;">🧠</div>
+            <h3>Memory Management</h3>
+            <p>First Fit, Best Fit and Worst Fit allocation</p>
+            <small>Open Module →</small>
+        </div>
+        <div class="card" onclick="openModule('deadlockModule')">
+            <div style="font-size:32px;">🔒</div>
+            <h3>Deadlock Detection</h3>
+            <p>Banker's Algorithm and system safety analysis</p>
+            <small>Open Module →</small>
+        </div>
+        <div class="card" onclick="openModule('processModule')">
+            <div style="font-size:32px;">⚙️</div>
+            <h3>Process Management</h3>
+            <p>Monitor process states, priority and execution details</p>
+            <small>Open Module →</small>
+        </div>
+    </div>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">📦</div>
+            <div class="stat-label">Total Processes</div>
+            <div class="stat-value" id="totalProcesses">{{ process_stats.total }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">⏳</div>
+            <div class="stat-label">New Processes</div>
+            <div class="stat-value" id="newProcesses">{{ process_stats.new_count }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">⚡</div>
+            <div class="stat-label">Running Processes</div>
+            <div class="stat-value" id="runningProcesses">{{ process_stats.running_count }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">✅</div>
+            <div class="stat-label">Completed Processes</div>
+            <div class="stat-value" id="completedProcesses">{{ process_stats.completed_count }}</div>
+        </div>
+    </div>
+    <!-- CPU SCHEDULING MODULE -->
+    <div class="module" id="cpuModule">
+        <button class="back-btn" onclick="closeModules()">← Back to Dashboard</button>
+        <h2>CPU Scheduling</h2>
+        <p>Select the algorithms you want to execute and compare.</p>
+        <div class="algorithm-list">
+            <label class="algorithm-option">
+                <input type="checkbox" name="algorithm" value="FCFS">
+                FCFS
+            </label>
+            <label class="algorithm-option">
+                <input type="checkbox" name="algorithm" value="SJF">
+                SJF
+            </label>
+            <label class="algorithm-option">
+                <input type="checkbox" name="algorithm" value="SRTF">
+                SRTF
+            </label>
+            <label class="algorithm-option">
+                <input type="checkbox" name="algorithm" value="Priority">
+                Priority
+            </label>
+            <label class="algorithm-option">
+                <input type="checkbox" name="algorithm" value="Round Robin">
+                Round Robin
+            </label>
+        </div>
+        <button onclick="runSelectedAlgorithms()">
+            Run Selected Algorithms
+        </button>
+        <p id="selectionMessage" aria-live="polite">
+            No algorithms selected.
+        </p>
+        <div id="comparisonResult"></div>
+    </div>    
+    <!-- MEMORY MANAGEMENT MODULE -->
+    <div class="module" id="memoryModule">
+        <button class="back-btn" onclick="closeModules()">
+            ← Back to Dashboard
+        </button>
+        <h2>Memory Management</h2>
+        <p>Compare First Fit, Best Fit and Worst Fit memory allocation algorithms.</p>
+        <div style="margin: 25px 0;">
+            <label for="memoryBlocks">
+                <strong>Memory Blocks (in KB)</strong>
+            </label>
+            <input
+                type="text"
+                id="memoryBlocks"
+                placeholder="Example: 100, 500, 200, 300, 600"
+                style="width:100%; padding:13px; margin:10px 0 20px;
+                background:#080d25; color:white; border:1px solid #34415d;
+                border-radius:8px; box-sizing:border-box;"
+            >
+            <label for="processSizes">
+                <strong>Process Sizes (in KB)</strong>
+            </label>
+            <input
+                type="text"
+                id="processSizes"
+                placeholder="Example: 212, 417, 112, 426"
+                style="width:100%; padding:13px; margin:10px 0 20px;
+                background:#080d25; color:white; border:1px solid #34415d;
+                border-radius:8px; box-sizing:border-box;"
+            >
+            <button onclick="runMemoryAlgorithms()">
+                Run Memory Allocation
+            </button>
+            <p id="memoryMessage" aria-live="polite">
+                Enter memory blocks and process sizes.
+            </p>
+        </div>
+        <div id="memoryResults"></div>
+    </div>
+    <!-- DEADLOCK DETECTION MODULE -->
+    <div class="module" id="deadlockModule">
+        <button class="back-btn" onclick="closeModules()">
+            ← Back to Dashboard
+        </button>
+        <h2>Deadlock Detection</h2>
+        <p>
+            Analyze resource allocation using Banker's Algorithm
+            and determine whether the system is in a safe state.
+        </p>
+        <div style="margin:25px 0;">
+            <label for="processCount">
+                <strong>Number of Processes</strong>
+            </label>
+            <input type="number" id="processCount"
+                min="1" max="10" value="5"
+                style="width:100%; padding:12px; margin:10px 0 20px;
+                background:#080d25; color:white;
+                border:1px solid #34415d; border-radius:8px;
+                box-sizing:border-box;">
+            <label for="resourceCount">
+                <strong>Number of Resource Types</strong>
+            </label>
+            <input type="number" id="resourceCount"
+                min="1" max="5" value="3"
+                style="width:100%; padding:12px; margin:10px 0 20px;
+                background:#080d25; color:white;
+                border:1px solid #34415d; border-radius:8px;
+                box-sizing:border-box;">
+            <button onclick="generateDeadlockInputs()">
+                Generate Input Fields
+            </button>
+        </div>
+        <div id="deadlockInputs"></div>
+        <div id="deadlockResults"></div>
+        <p id="deadlockMessage" aria-live="polite"></p>
+    </div>
+    <!-- PROCESS MANAGEMENT MODULE -->
+    <div class="module" id="processModule">
+        <button class="back-btn" onclick="closeModules()">
+            ← Back to Dashboard
+        </button>
+        <h2>Process Management</h2>
+        <p>Monitor and analyze processes associated with this session.</p>
+        <button onclick="loadProcesses()">
+            Load Processes
+        </button>
+        <div id="processSummary" style="margin:20px 0;"></div>
+        <div style="overflow-x:auto;">
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Process ID</th>
+                        <th>Task ID</th>
+                        <th>Task Title</th>
+                        <th>State</th>
+                        <th>Priority</th>
+                        <th>Burst Time</th>
+                        <th>Remaining Time</th>
+                        <th>Memory (KB)</th>
+                    </tr>
+                </thead>
+                <tbody id="processTableBody">
+                    <tr>
+                        <td colspan="8">Click Load Processes to view data.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p id="processMessage" aria-live="polite"></p>
+    </div>
+    <div class="summary-action">
+        <h2>Ready to Generate Project Summary?</h2>
+        <p>
+            Assign extracted tasks to team members
+            and generate the final project report.
+        </p>
+        <a href="{{ url_for('generate_summary', session_id=session.session_id) }}"
+            class="summary-btn"
+            style="display: inline-block; text-decoration: none;">
+            Generate Summary →
+        </a>
+    </div>
+    <script>
+        const sessionId = {{ session.session_id | tojson }};
+        function openModule(moduleId) {
+            closeModules();
+            document.getElementById(moduleId).style.display = "block";
+            document.getElementById(moduleId).scrollIntoView({
+                behavior: "smooth"
+            });
+        }
+        function closeModules() {
+            document.querySelectorAll(".module").forEach(module => {
+                module.style.display = "none";
+            });
+        }
+        
+    async function runSelectedAlgorithms(){
+        const selected = Array.from(
+            document.querySelectorAll('input[name="algorithm"]:checked')
+        ).map(input => input.value);
+        const message = document.getElementById("selectionMessage");
+        const result = document.getElementById("comparisonResult");
+        const button = document.querySelector(
+            "#cpuModule button:not(.back-btn)"
+        );
+        if (selected.length === 0) {
+            message.textContent = "Please select at least one algorithm.";
+            result.replaceChildren();
+            return;
+        }
+        button.disabled = true;
+        message.textContent = "Running selected algorithms...";
+        result.replaceChildren();
+        try {
+            const response = await fetch(
+                `/cpu-schedule-comparison/${sessionId}`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        algorithms: selected
+                    })
+                }
+            );
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.error || data.message || "Scheduling failed");
+            }
+            message.textContent =
+                "Successfully executed: " +
+                data.selected_algorithms.join(", ");
+            // Comparison heading
+            const heading = document.createElement("h3");
+            heading.textContent = "CPU Scheduling Comparison Results";
+            result.appendChild(heading);
+            const count = document.createElement("p");
+            count.textContent =
+                `Total Processes: ${data.process_count} | ` +
+                `Round Robin Quantum: ${data.round_robin_quantum}`;
+            result.appendChild(count);
+            // Comparison table
+            const table = document.createElement("table");
+            table.className = "comparison-table";
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Algorithm</th>
+                        <th>Avg WT</th>
+                        <th>Avg TAT</th>
+                        <th>CPU Utilization</th>
+                        <th>Throughput</th>
+                    </tr>
+                </thead>
+            `;
+            const tbody = document.createElement("tbody");
+            data.comparison.forEach(item => {
+                const row = document.createElement("tr");
+                [
+                    item.algorithm,
+                    item.average_waiting_time,
+                    item.average_turnaround_time,
+                    item.cpu_utilization + "%",
+                    item.throughput
+                ].forEach(value => {
+                    const cell = document.createElement("td");
+                    cell.textContent = value;
+                    row.appendChild(cell);
+                });
+                tbody.appendChild(row);
+            });
+            table.appendChild(tbody);
+            result.appendChild(table);
+            // Best algorithm information
+            const best = document.createElement("p");
+            best.className = "best-result";
+            best.textContent =
+                `Best Average Waiting Time: ${data.best_average_waiting_time} | ` +
+                `Best Average Turnaround Time: ${data.best_average_turnaround_time}`;
+            result.appendChild(best);
+            // Gantt charts
+            const ganttHeading = document.createElement("h3");
+            ganttHeading.textContent = "Gantt Chart Comparison";
+            result.appendChild(ganttHeading);
+            data.comparison.forEach(item => {
+                const section = document.createElement("div");
+                section.className = "gantt-section";
+                const title = document.createElement("h4");
+                title.textContent = item.algorithm;
+                section.appendChild(title);
+                const chart = document.createElement("div");
+                chart.className = "gantt-chart";
+                item.gantt_chart.forEach(segment => {
+                    const block = document.createElement("div");
+                    block.className = "gantt-block";
+                    block.textContent =
+                        segment.process === "IDLE"
+                            ? "IDLE"
+                            : "P" + segment.process;
+                    block.style.flex =
+                        `${segment.end - segment.start} 0 0`;
+                    chart.appendChild(block);
+                });
+                section.appendChild(chart);
+                const timeline = document.createElement("p");
+                timeline.className = "gantt-timeline";
+                timeline.textContent =
+                    "Time: " +
+                    item.gantt_chart.map(
+                        segment => segment.start
+                    ).concat(
+                        item.gantt_chart.length
+                            ? [item.gantt_chart[item.gantt_chart.length - 1].end]
+                            : []
+                    ).join("       ");
+                section.appendChild(timeline);
+                result.appendChild(section);
+            });
+        } catch (error) {
+            message.textContent = "Error: " + error.message;
+        } finally {
+            button.disabled = false;
+        }
+    }
+    function runMemoryAlgorithms() {
+        const blocks = document.getElementById("memoryBlocks")
+            .value.split(",").map(Number);
+        const processes = document.getElementById("processSizes")
+            .value.split(",").map(Number);
+        const message = document.getElementById("memoryMessage");
+        const results = document.getElementById("memoryResults");
+        results.replaceChildren();
+        if (
+            !blocks.length || !processes.length ||
+            blocks.some(n => !Number.isFinite(n) || n <= 0) ||
+            processes.some(n => !Number.isFinite(n) || n <= 0)
+        ) {
+            message.textContent = "Enter valid positive numbers separated by commas.";
+            return;
+        }
+        function allocateMemory(type) {
+            let memory = [...blocks];
+            let allocation = Array(processes.length).fill(-1);
+            processes.forEach((process, i) => {
+                let selected = -1;
+                for (let j = 0; j < memory.length; j++) {
+                    if (memory[j] >= process) {
+                        if (type === "First Fit") {
+                            selected = j;
+                            break;
+                        }
+                        if (type === "Best Fit") {
+                            if (selected === -1 || memory[j] < memory[selected]) {
+                                selected = j;
+                            }
+                        }
+                        if (type === "Worst Fit") {
+                            if (selected === -1 || memory[j] > memory[selected]) {
+                                selected = j;
+                            }
+                        }
+                    }
+                }
+                if (selected !== -1) {
+                    allocation[i] = selected + 1;
+                    memory[selected] -= process;
+                }
+            });
+            return { allocation, memory };
+        }
+        const algorithms = ["First Fit", "Best Fit", "Worst Fit"];
+        const heading = document.createElement("h3");
+        heading.textContent = "Memory Allocation Comparison";
+        results.appendChild(heading);
+        const table = document.createElement("table");
+        table.className = "comparison-table";
+        table.innerHTML = `
+            <thead>
+                <tr>
+                    <th>Algorithm</th>
+                    <th>Process</th>
+                    <th>Size (KB)</th>
+                    <th>Allocated Block</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+        `;
+        const tbody = document.createElement("tbody");
+        algorithms.forEach(type => {
+            const result = allocateMemory(type);
+            processes.forEach((process, i) => {
+                const row = document.createElement("tr");
+                const values = [
+                    type,
+                    `P${i + 1}`,
+                    process,
+                    result.allocation[i] === -1
+                        ? "Not Allocated"
+                        : `Block ${result.allocation[i]}`,
+                    result.allocation[i] === -1
+                        ? "Failed"
+                        : "Allocated"
+                ];
+                values.forEach(value => {
+                    const cell = document.createElement("td");
+                    cell.textContent = value;
+                    row.appendChild(cell);
+                });
+                tbody.appendChild(row);
+            });
+        });
+        table.appendChild(tbody);
+        results.appendChild(table);
+        message.textContent = "All three memory allocation algorithms executed successfully.";
+    }
+    async function loadProcesses() {
+        const tableBody = document.getElementById("processTableBody");
+        const summary = document.getElementById("processSummary");
+        const message = document.getElementById("processMessage");
+        tableBody.replaceChildren();
+        message.textContent = "Loading processes...";
+        summary.textContent = "";
+        try {
+            const response = await fetch(`/process-data/${sessionId}`);
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.error || "Unable to load processes.");
+            }
+            const processes = data.processes;
+            summary.textContent =
+                `Total Processes: ${data.total_processes}`;
+            if (processes.length === 0) {
+                const row = document.createElement("tr");
+                const cell = document.createElement("td");
+                cell.colSpan = 8;
+                cell.textContent = "No processes found for this session.";
+                row.appendChild(cell);
+                tableBody.appendChild(row);
+                message.textContent = "";
+                return;
+            }
+            processes.forEach(process => {
+                const row = document.createElement("tr");
+                const values = [
+                    process.process_id,
+                    process.task_id,
+                    process.task_title,
+                    process.state,
+                    process.priority,
+                    process.burst_time,
+                    process.remaining_time,
+                    process.memory_required
+                ];
+                values.forEach(value => {
+                    const cell = document.createElement("td");
+                    cell.textContent = value ?? "N/A";
+                    row.appendChild(cell);
+                });
+                tableBody.appendChild(row);
+            });
+            message.textContent = "Process data loaded successfully.";
+        } catch (error) {
+            message.textContent = "Error: " + error.message;
+        }
+    }
+    // GENERATE DEADLOCK INPUT FIELDS
+    function generateDeadlockInputs() {
+        const processCount = Number(
+            document.getElementById("processCount").value
+        );
+    const resourceCount = Number(
+        document.getElementById("resourceCount").value
+    );
+    const container = document.getElementById("deadlockInputs");
+    const results = document.getElementById("deadlockResults");
+    const message = document.getElementById("deadlockMessage");
+    container.replaceChildren();
+    results.replaceChildren();
+    message.textContent = "";
+    if (
+        !Number.isInteger(processCount) ||
+        !Number.isInteger(resourceCount) ||
+        processCount < 1 || processCount > 10 ||
+        resourceCount < 1 || resourceCount > 5
+    ) {
+        message.textContent =
+            "Processes: 1-10 and Resources: 1-5 allowed.";
+        return;
+    }
+    function createMatrix(title, prefix, rows, columns) {
+        const heading = document.createElement("h3");
+        heading.textContent = title;
+        container.appendChild(heading);
+        const table = document.createElement("table");
+        table.className = "comparison-table";
+        let html = "<thead><tr><th>Process</th>";
+        for (let j = 0; j < columns; j++) {
+            html += `<th>R${j + 1}</th>`;
+        }
+        html += "</tr></thead><tbody>";
+        for (let i = 0; i < rows; i++) {
+            html += `<tr><th>P${i}</th>`;
+            for (let j = 0; j < columns; j++) {
+                html += `
+                    <td>
+                        <input
+                            type="number"
+                            id="${prefix}_${i}_${j}"
+                            min="0"
+                            step="1"
+                            value="0"
+                            style="width:65px; padding:7px;
+                            background:#080d25; color:white;
+                            border:1px solid #34415d;
+                            border-radius:5px;"
+                        >
+                    </td>
+                `;
+            }
+            html += "</tr>";
+        }
+        html += "</tbody>";
+        table.innerHTML = html;
+        container.appendChild(table);
+    }
+    // AVAILABLE RESOURCES
+    const availableHeading = document.createElement("h3");
+    availableHeading.textContent = "Available Resources";
+    container.appendChild(availableHeading);
+    const availableDiv = document.createElement("div");
+    for (let j = 0; j < resourceCount; j++) {
+        const input = document.createElement("input");
+        input.type = "number";
+        input.id = `available_${j}`;
+        input.min = "0";
+        input.step = "1";
+        input.value = "0";
+        input.style.cssText =
+            "width:80px;padding:10px;margin:5px;" +
+            "background:#080d25;color:white;" +
+            "border:1px solid #34415d;border-radius:6px;";
+        availableDiv.appendChild(input);
+    }
+    container.appendChild(availableDiv);
+    // ALLOCATION MATRIX
+    createMatrix(
+        "Allocation Matrix",
+        "allocation",
+        processCount,
+        resourceCount
+    );
+    // MAXIMUM MATRIX
+    createMatrix(
+        "Maximum Demand Matrix",
+        "maximum",
+        processCount,
+        resourceCount
+    );
+    const button = document.createElement("button");
+    button.textContent = "Run Banker's Algorithm";
+    button.style.marginTop = "20px";
+    button.onclick = runBankersAlgorithm;
+    container.appendChild(button);
+    const note = document.createElement("p");
+    note.textContent =
+        "Enter allocated resources, maximum demand and available resources.";
+    note.style.color = "#9caed0";
+    container.appendChild(note);
+}
+// BANKER'S ALGORITHM
+function runBankersAlgorithm() {
+    const n = Number(
+        document.getElementById("processCount").value
+    );
+    const m = Number(
+        document.getElementById("resourceCount").value
+    );
+    const results = document.getElementById("deadlockResults");
+    const message = document.getElementById("deadlockMessage");
+    results.replaceChildren();
+    message.textContent = "";
+    function readInput(id) {
+        const element = document.getElementById(id);
+        if (!element || element.value.trim() === "") {
+            throw new Error("All fields must have values.");
+        }
+        const value = Number(element.value);
+        if (!Number.isSafeInteger(value) || value < 0) {
+            throw new Error("Enter valid non-negative integers.");
+        }
+        return value;
+    }
+    try {
+        // READ AVAILABLE RESOURCES
+        const available = [];
+        for (let j = 0; j < m; j++) {
+            available.push(readInput(`available_${j}`));
+        }
+        // READ ALLOCATION AND MAXIMUM MATRICES
+        const allocation = [];
+        const maximum = [];
+        const need = [];
+        for (let i = 0; i < n; i++) {
+            const allocationRow = [];
+            const maximumRow = [];
+            const needRow = [];
+            for (let j = 0; j < m; j++) {
+                const allocated = readInput(
+                    `allocation_${i}_${j}`
+                );
+                const max = readInput(
+                    `maximum_${i}_${j}`
+                );
+                if (allocated > max) {
+                    throw new Error(
+                        `Allocation cannot exceed maximum for P${i}, R${j + 1}.`
+                    );
+                }
+                allocationRow.push(allocated);
+                maximumRow.push(max);
+                needRow.push(max - allocated);
+            }
+            allocation.push(allocationRow);
+            maximum.push(maximumRow);
+            need.push(needRow);
+        }
+        // BANKER'S SAFETY ALGORITHM
+        const work = [...available];
+        const finish = Array(n).fill(false);
+        const safeSequence = [];
+        let progress = true;
+        while (progress) {
+            progress = false;
+            for (let i = 0; i < n; i++) {
+                if (finish[i]) continue;
+                let canExecute = true;
+                for (let j = 0; j < m; j++) {
+                    if (need[i][j] > work[j]) {
+                        canExecute = false;
+                        break;
+                    }
+                }
+                if (canExecute) {
+                    for (let j = 0; j < m; j++) {
+                        work[j] += allocation[i][j];
+                    }
+                    finish[i] = true;
+                    safeSequence.push(`P${i}`);
+                    progress = true;
+                }
+            }
+        }
+        const isSafe = finish.every(value => value);
+        // DISPLAY MATRIX
+        function displayMatrix(title, matrix) {
+            const heading = document.createElement("h3");
+            heading.textContent = title;
+            results.appendChild(heading);
+            const table = document.createElement("table");
+            table.className = "comparison-table";
+            let html = "<thead><tr><th>Process</th>";
+            for (let j = 0; j < m; j++) {
+                html += `<th>R${j + 1}</th>`;
+            }
+            html += "</tr></thead><tbody>";
+            matrix.forEach((row, i) => {
+                html += `<tr><th>P${i}</th>`;
+                row.forEach(value => {
+                    html += `<td>${value}</td>`;
+                });
+                html += "</tr>";
+            });
+            html += "</tbody>";
+            table.innerHTML = html;
+            results.appendChild(table);
+        }
+        displayMatrix("Allocation Matrix", allocation);
+        displayMatrix("Maximum Demand Matrix", maximum);
+        displayMatrix("Need Matrix", need);
+        // DISPLAY AVAILABLE RESOURCES
+        const availableHeading = document.createElement("h3");
+        availableHeading.textContent = "Available Resources";
+        results.appendChild(availableHeading);
+        const availableText = document.createElement("p");
+        availableText.textContent = available.join("  |  ");
+        results.appendChild(availableText);
+        // DISPLAY RESULT
+        const resultBox = document.createElement("div");
+        resultBox.className = "best-result";
+        resultBox.style.marginTop = "20px";
+        if (isSafe) {
+            resultBox.style.border = "1px solid #4ade80";
+            const heading = document.createElement("h3");
+            heading.textContent = "SYSTEM IS IN SAFE STATE";
+            heading.style.color = "#4ade80";
+            const sequence = document.createElement("p");
+            sequence.textContent =
+                "Safe Sequence: " + safeSequence.join(" → ");
+            resultBox.appendChild(heading);
+            resultBox.appendChild(sequence);
+        } else {
+            resultBox.style.border = "1px solid #f87171";
+            const heading = document.createElement("h3");
+            heading.textContent = "SYSTEM IS IN UNSAFE STATE";
+            heading.style.color = "#f87171";
+            const unfinished = finish
+                .map((done, i) => done ? null : `P${i}`)
+                .filter(Boolean);
+            const detail = document.createElement("p");
+            detail.textContent =
+                "Processes unable to finish: " + unfinished.join(", ");
+            resultBox.appendChild(heading);
+            resultBox.appendChild(detail);
+        }
+        results.appendChild(resultBox);
+        message.textContent =
+            "Banker's Algorithm executed successfully.";
+    } catch (error) {
+        message.textContent = "Error: " + error.message;
+    }
+}
+    </script>
+</body>
+</html>
